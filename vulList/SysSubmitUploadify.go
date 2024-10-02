@@ -2,6 +2,7 @@ package vulList
 
 import (
 	"bytes"
+	"crypto/tls"
 	"fmt"
 	"github.com/fatih/color"
 	"io/ioutil"
@@ -41,7 +42,11 @@ Content-Type: image/png
 	req.Header.Set("Accept-Encoding", "gzip, deflate, br")
 	req.Header.Set("Connection", "keep-alive")
 
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // 禁用证书验证
+		},
+	}
 	resp, err := client.Do(req)
 	if err != nil {
 		return fmt.Errorf("Request Error: %v", err)

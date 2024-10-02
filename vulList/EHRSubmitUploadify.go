@@ -2,6 +2,7 @@ package vulList
 
 import (
 	"bytes"
+	"crypto/tls"
 	"fmt"
 	"github.com/fatih/color"
 	"io/ioutil"
@@ -11,7 +12,6 @@ import (
 )
 
 func EHRSubmitUploadifyCheck(target string) error {
-
 	urlObj, err := url.Parse(target)
 	if err != nil {
 		return fmt.Errorf("URL Parse Error: %v", err)
@@ -40,7 +40,11 @@ Content-Type: image/png
 	req.Header.Set("Accept-Encoding", "gzip, deflate, br")
 	req.Header.Set("Connection", "keep-alive")
 
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // 禁用证书验证
+		},
+	}
 	resp, err := client.Do(req)
 	if err != nil {
 		return fmt.Errorf("Request Error: %v", err)

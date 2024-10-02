@@ -1,6 +1,7 @@
 package vulList
 
 import (
+	"crypto/tls"
 	"fmt"
 	"github.com/fatih/color"
 	"io/ioutil"
@@ -9,8 +10,15 @@ import (
 )
 
 func ReadTxtLogCheck(target string) error {
+
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // 禁用证书验证
+		},
+	}
+
 	baseurl := target + "BaseModule/SysLog/ReadTxtLog?FileName=../web.config"
-	resp, err := http.Get(baseurl)
+	resp, err := client.Get(baseurl)
 	if err != nil {
 		return fmt.Errorf("Error sending request: %v", err)
 	}

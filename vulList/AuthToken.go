@@ -1,6 +1,7 @@
 package vulList
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -13,8 +14,10 @@ func AuthTokenCheck(target string) error {
 	// 捕获重定向的响应而不自动跟随
 	client := &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-
 			return http.ErrUseLastResponse
+		},
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // 忽略证书验证
 		},
 	}
 
